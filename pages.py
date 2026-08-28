@@ -20,13 +20,20 @@ body{font-family:'Vazirmatn',sans-serif;min-height:100vh;display:flex;align-item
 .orb1{width:500px;height:500px;background:rgba(139,92,246,0.04);top:-200px;right:-100px}
 .orb2{width:400px;height:400px;background:rgba(34,211,238,0.03);bottom:-100px;left:-80px;animation-delay:2s}
 @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-30px) scale(1.1)}}
-.container{position:relative;z-index:10;display:grid;grid-template-columns:1fr 1fr;max-width:1100px;width:100%;background:var(--card);backdrop-filter:blur(40px) saturate(160%);border-radius:24px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--glow),0 25px 80px rgba(0,0,0,0.6)}
+@property --angle{syntax:'<angle>';inherits:false;initial-value:0deg}
+.container{position:relative;z-index:10;display:grid;grid-template-columns:1fr 1fr;max-width:1100px;width:100%;background:var(--card);backdrop-filter:blur(40px) saturate(160%);border-radius:24px;overflow:hidden;box-shadow:var(--glow),0 25px 80px rgba(0,0,0,0.6)}
+.container::before{content:'';position:absolute;inset:0;border-radius:24px;padding:1.5px;background:conic-gradient(from var(--angle),#8B5CF6,#22D3EE,#6D28D9,#8B5CF6);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:auraSpin 7s linear infinite;pointer-events:none;z-index:1}
+@keyframes auraSpin{to{--angle:360deg}}
 .login-section{padding:48px 40px}
 .brand{display:flex;align-items:center;gap:12px;margin-bottom:32px}
-.brand-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#6D28D9,#22D3EE);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 40px rgba(139,92,246,0.2)}
+.brand-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#8B5CF6,#6D28D9,#22D3EE);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 40px rgba(139,92,246,0.2);animation:brandPulse 3s ease-in-out infinite}
+@keyframes brandPulse{0%,100%{box-shadow:0 0 40px rgba(139,92,246,0.2);transform:scale(1)}50%{box-shadow:0 0 55px rgba(139,92,246,0.35);transform:scale(1.04)}}
 .brand-text{font-size:16px;font-weight:800;background:linear-gradient(135deg,#22D3EE,#8B5CF6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.brand-sub{font-size:9px;color:var(--t3);-webkit-text-fill-color:var(--t3)}
-.welcome{font-size:22px;font-weight:800;color:var(--t1);margin-bottom:4px}
+.brand-sub{font-size:9px;color:var(--t3);-webkit-text-fill-color:var(--t3);display:flex;align-items:center;gap:5px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#34D399;box-shadow:0 0 8px #34D399;display:inline-block;animation:livePulse 1.6s ease-in-out infinite}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.3)}}
+.welcome{font-size:22px;font-weight:800;background:linear-gradient(90deg,var(--t1) 20%,var(--accent2) 50%,var(--t1) 80%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;animation:textShine 4s linear infinite}
+@keyframes textShine{to{background-position:-200% center}}
 .sub-text{font-size:13px;color:var(--t3);margin-bottom:28px}
 .field{margin-bottom:18px}
 .field label{display:block;font-size:10px;font-weight:600;color:var(--t2);margin-bottom:4px}
@@ -51,7 +58,12 @@ body{font-family:'Vazirmatn',sans-serif;min-height:100vh;display:flex;align-item
 .info-sub{font-size:13px;color:var(--t3);margin-bottom:24px}
 .features{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .feature{background:rgba(139,92,246,0.03);border-radius:12px;padding:14px 12px;text-align:center;border:1px solid rgba(139,92,246,0.04)}
-.feature .icon{font-size:28px;display:block;margin-bottom:4px}
+.feature .icon{font-size:28px;display:block;margin-bottom:4px;animation:emojiFloat 3s ease-in-out infinite}
+.feature:nth-child(1) .icon{animation-delay:0s}
+.feature:nth-child(2) .icon{animation-delay:.25s}
+.feature:nth-child(3) .icon{animation-delay:.5s}
+.feature:nth-child(4) .icon{animation-delay:.75s}
+@keyframes emojiFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-4px) rotate(-6deg)}}
 .feature .name{font-size:11px;font-weight:600;color:var(--t1)}
 .feature .desc{font-size:8px;color:var(--t3);margin-top:2px}
 .lang-toggle{position:fixed;top:20px;left:20px;z-index:50;display:flex;gap:6px;background:var(--card);backdrop-filter:blur(28px) saturate(160%);border:1px solid var(--border);border-radius:10px;padding:4px}
@@ -82,7 +94,7 @@ body{font-family:'Vazirmatn',sans-serif;min-height:100vh;display:flex;align-item
 </div>
 <div class="container">
     <div class="login-section">
-        <div class="brand"><div class="brand-icon">🏛️</div><div><div class="brand-text">تخت جمشید</div><div class="brand-sub">مدیریت کاربران</div></div></div>
+        <div class="brand"><div class="brand-icon">🏛️</div><div><div class="brand-text">تخت جمشید</div><div class="brand-sub"><span class="live-dot"></span>مدیریت کاربران · آنلاین</div></div></div>
         <div class="welcome" id="welcome-text">خوش آمدید</div>
         <div class="sub-text" id="sub-text">وارد پنل مدیریت شوید</div>
         <div class="error-box" id="error-box"><i class="ti ti-alert-circle"></i><span id="error-text"></span></div>
@@ -236,6 +248,12 @@ body{font-family:'Vazirmatn',sans-serif;background:radial-gradient(ellipse 900px
 .glow-left{width:600px;height:600px;background:rgba(139,92,246,0.02);top:-300px;left:-200px;animation:glowFloat 8s ease-in-out infinite}
 .glow-right{width:500px;height:500px;background:rgba(34,211,238,0.02);bottom:-200px;right:-100px;animation:glowFloat 10s ease-in-out infinite reverse}
 @keyframes glowFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-30px) scale(1.1)}}
+body.rgb-mode{transition:none}
+body.rgb-mode .glow-left{background:var(--glow-1,rgba(139,92,246,0.02));transition:background .1s linear}
+body.rgb-mode .glow-right{background:var(--glow-2,rgba(34,211,238,0.02));transition:background .1s linear}
+body.rgb-mode .logo-icon{box-shadow:0 0 40px var(--card-bh)}
+body.rgb-mode .stat-card:hover,body.rgb-mode .conn-card:hover,body.rgb-mode .stat-mini:hover{box-shadow:0 0 30px var(--card-bh)}
+body.rgb-mode .switch.on{box-shadow:0 0 16px var(--card-bh)}
 .sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--card);backdrop-filter:blur(40px) saturate(160%);border-left:1px solid var(--card-b);display:flex;flex-direction:column;flex-shrink:0;position:fixed;right:0;top:0;bottom:0;z-index:200;transition:transform .4s cubic-bezier(0.34,1.56,0.64,1),background .4s;box-shadow:var(--shadow)}
 .logo{display:flex;align-items:center;gap:10px;padding:16px 12px 12px;border-bottom:1px solid var(--card-b)}
 .logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#8B5CF6,#6D28D9,#22D3EE);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;box-shadow:0 0 30px rgba(139,92,246,0.15);animation:pulseLogo 3s ease-in-out infinite}
@@ -288,7 +306,14 @@ body{font-family:'Vazirmatn',sans-serif;background:radial-gradient(ellipse 900px
 .stat-card{background:var(--card);backdrop-filter:blur(28px) saturate(160%);border:1px solid var(--card-b);border-radius:var(--radius);padding:12px 8px;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);text-align:center;position:relative;overflow:hidden}
 .stat-card::before{content:'';position:absolute;top:-50%;right:-50%;width:100px;height:100px;background:radial-gradient(circle,rgba(139,92,246,0.03),transparent 70%);pointer-events:none}
 .stat-card:hover{border-color:var(--card-bh);transform:translateY(-4px) scale(1.02);box-shadow:var(--shadow)}
-.stat-card .icon{font-size:18px;margin-bottom:3px;display:block}
+.stat-card .icon{font-size:18px;margin-bottom:3px;display:block;animation:emojiFloat2 3.2s ease-in-out infinite}
+.stat-card:nth-child(1) .icon{animation-delay:0s}
+.stat-card:nth-child(2) .icon{animation-delay:.2s}
+.stat-card:nth-child(3) .icon{animation-delay:.4s}
+.stat-card:nth-child(4) .icon{animation-delay:.6s}
+.stat-card:nth-child(5) .icon{animation-delay:.8s}
+.stat-card:nth-child(6) .icon{animation-delay:1s}
+@keyframes emojiFloat2{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-5deg)}}
 .stat-card .number{font-size:18px;font-weight:800;color:var(--t1);line-height:1.2}
 .stat-card .number.small{font-size:13px}
 .stat-card .label{font-size:9px;color:var(--t3);margin-top:2px;font-weight:500}
@@ -322,8 +347,9 @@ body{font-family:'Vazirmatn',sans-serif;background:radial-gradient(ellipse 900px
 .users-table .status-badge.expired{background:var(--red-bg);color:var(--red-t)}
 .users-table .status-badge.disabled{background:var(--amber-bg);color:var(--amber-t)}
 .users-table .usage-bar{display:flex;align-items:center;gap:6px}
-.users-table .usage-bar .bar{width:80px;height:3px;border-radius:3px;background:rgba(139,92,246,0.05);overflow:hidden}
-.users-table .usage-bar .bar .fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#8B5CF6,#6D28D9,#22D3EE);transition:width .8s cubic-bezier(0.34,1.56,0.64,1)}
+.users-table .usage-bar .bar{width:80px;height:5px;border-radius:4px;background:rgba(139,92,246,0.06);overflow:hidden;box-shadow:inset 0 0 4px rgba(0,0,0,0.3)}
+.users-table .usage-bar .bar .fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#FF3CAC,#784BA0,#2B86C5,#22D3EE,#8B5CF6,#FF3CAC);background-size:300% 100%;animation:rgbBarFlow 5s linear infinite;box-shadow:0 0 8px rgba(139,92,246,.55);transition:width .8s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes rgbBarFlow{0%{background-position:0% 50%}100%{background-position:300% 50%}}
 .users-table .usage-text{font-size:9px;color:var(--t2);white-space:nowrap}
 .users-table .action-btns{display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
 .users-table .action-btns .btn{padding:2px 6px;font-size:8px;border-radius:4px}
@@ -709,7 +735,17 @@ body.light-theme .chart-section{background:rgba(255,255,255,0.8)}
   
   <div class="settings-card"><div class="title"><i class="ti ti-language"></i> <span id="set-lang-title">زبان پنل</span></div><div style="display:flex;gap:6px;margin-top:4px"><button class="btn btn-pur" onclick="setLang('fa')" style="flex:1;font-size:11px;padding:6px 12px" id="lang-fa-btn">🇮🇷 فارسی</button><button class="btn btn-o" onclick="setLang('en')" style="flex:1;font-size:11px;padding:6px 12px" id="lang-en-btn">🇬🇧 English</button></div><div style="font-size:9px;color:var(--t3);margin-top:6px">💡 <span id="set-current-lang">زبان فعلی</span>: <span id="current-lang-label">فارسی</span></div></div>
   
-  <div class="settings-card"><div class="title"><i class="ti ti-color-swatch"></i> <span id="set-rgb-title">تم RGB</span></div><div class="toggle-row"><div class="toggle-label"><i class="ti ti-color-palette" style="background:linear-gradient(135deg,#ff0000,#00ff00,#0000ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent"></i> RGB</div><div class="switch" id="rgb-switch" onclick="toggleRGB()"><div class="slider"></div></div></div></div>
+  <div class="settings-card"><div class="title"><i class="ti ti-color-swatch"></i> <span id="set-rgb-title">تم RGB</span></div><div class="toggle-row" style="border-bottom:none"><div class="toggle-label"><i class="ti ti-color-palette" style="background:linear-gradient(135deg,#ff0000,#00ff00,#0000ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent"></i> RGB</div><div class="switch" id="rgb-switch" onclick="toggleRGB()"><div class="slider"></div></div></div><div style="font-size:9px;color:var(--t3);margin-top:2px">🌈 وقتی روشنه، رنگ‌بندی کل پنل به‌آرومی مثل نور RGB می‌چرخه</div></div>
+
+  <div class="settings-card" style="max-width:480px">
+    <div class="title"><i class="ti ti-lock"></i> تغییر نام کاربری و رمز عبور</div>
+    <div class="field"><label>رمز عبور فعلی</label><input type="password" id="cred-current-pass" placeholder="رمز عبور فعلی خود را وارد کنید" autocomplete="current-password"></div>
+    <div class="field"><label>نام کاربری جدید (اختیاری)</label><input type="text" id="cred-new-user" placeholder="خالی بگذارید تا تغییر نکند" autocomplete="off"></div>
+    <div class="field"><label>رمز عبور جدید (اختیاری)</label><input type="password" id="cred-new-pass" placeholder="خالی بگذارید تا تغییر نکند" autocomplete="new-password"></div>
+    <div class="field"><label>تکرار رمز عبور جدید</label><input type="password" id="cred-new-pass2" placeholder="تکرار رمز عبور جدید" autocomplete="new-password"></div>
+    <button class="btn btn-p" onclick="changeCredentials()" id="cred-submit-btn"><i class="ti ti-shield-check"></i> ذخیره تغییرات</button>
+    <div style="font-size:9px;color:var(--t3);margin-top:6px">🔒 پس از تغییر، سایر نشست‌های ورود باطل می‌شوند و برای بار بعد باید از اطلاعات جدید استفاده کنید.</div>
+  </div>
   
 </section>
 
@@ -1549,6 +1585,35 @@ async function loadLogs() {
 
 // ===== RGB Mode =====
 let rgbMode = false;
+let rgbHue = 258;
+let rgbTimer = null;
+
+function rgbTick() {
+  rgbHue = (rgbHue + 0.55) % 360;
+  const root = document.documentElement.style;
+  const h1 = rgbHue, h2 = (rgbHue + 65) % 360, h3 = (rgbHue + 300) % 360;
+  root.setProperty('--accent', `hsl(${h1},88%,64%)`);
+  root.setProperty('--accent2', `hsl(${h2},90%,62%)`);
+  root.setProperty('--accent3', `hsl(${h3},75%,46%)`);
+  root.setProperty('--card-b', `hsla(${h1},88%,64%,0.14)`);
+  root.setProperty('--card-bh', `hsla(${h1},88%,64%,0.24)`);
+  root.setProperty('--glow-1', `hsla(${h1},88%,60%,0.10)`);
+  root.setProperty('--glow-2', `hsla(${h2},90%,60%,0.08)`);
+}
+
+function startRGBCycle() {
+  document.body.classList.add('rgb-mode');
+  if (rgbTimer) return;
+  rgbTimer = setInterval(rgbTick, 35);
+}
+
+function stopRGBCycle() {
+  document.body.classList.remove('rgb-mode');
+  if (rgbTimer) { clearInterval(rgbTimer); rgbTimer = null; }
+  const root = document.documentElement.style;
+  ['--accent','--accent2','--accent3','--card-b','--card-bh','--glow-1','--glow-2'].forEach(v => root.removeProperty(v));
+}
+
 async function loadRGBStatus() {
   try {
     const r = await authF('/api/settings');
@@ -1560,8 +1625,8 @@ async function loadRGBStatus() {
 
 function updateRGBUI() {
   const sw = document.getElementById('rgb-switch');
-  if (rgbMode) { document.body.classList.add('rgb-mode'); sw.classList.add('on'); }
-  else { document.body.classList.remove('rgb-mode'); sw.classList.remove('on'); }
+  if (rgbMode) { startRGBCycle(); sw.classList.add('on'); }
+  else { stopRGBCycle(); sw.classList.remove('on'); }
 }
 
 async function toggleRGB() {
@@ -1577,6 +1642,43 @@ async function toggleRGB() {
     updateRGBUI();
     toast(rgbMode ? '🌈 RGB ' + (currentLang === 'fa' ? 'فعال شد' : 'enabled') : '🌙 RGB ' + (currentLang === 'fa' ? 'غیرفعال شد' : 'disabled'), 'ok');
   } catch(e) { toast('❌ ' + (currentLang === 'fa' ? 'خطا' : 'Error'), 'err'); }
+}
+
+// ===== تغییر رمز عبور / نام کاربری =====
+async function changeCredentials() {
+  const btn = document.getElementById('cred-submit-btn');
+  const currentPass = document.getElementById('cred-current-pass').value;
+  const newUser = document.getElementById('cred-new-user').value.trim();
+  const newPass = document.getElementById('cred-new-pass').value;
+  const newPass2 = document.getElementById('cred-new-pass2').value;
+
+  if (!currentPass) { toast('❌ رمز عبور فعلی را وارد کنید', 'err'); return; }
+  if (!newUser && !newPass) { toast('⚠️ چیزی برای تغییر وارد نکردید', 'warn'); return; }
+  if (newPass && newPass.length < 4) { toast('❌ رمز عبور جدید باید حداقل ۴ کاراکتر باشد', 'err'); return; }
+  if (newPass !== newPass2) { toast('❌ تکرار رمز عبور مطابقت ندارد', 'err'); return; }
+
+  btn.disabled = true;
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = '<i class="ti ti-loader-2"></i> در حال ذخیره...';
+  try {
+    const r = await authF('/api/settings/credentials', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ current_password: currentPass, new_username: newUser, new_password: newPass })
+    });
+    const data = await r.json();
+    if (!r.ok) { throw new Error(data.detail || 'خطا'); }
+    toast('✅ اطلاعات ورود با موفقیت تغییر کرد', 'ok');
+    document.getElementById('cred-current-pass').value = '';
+    document.getElementById('cred-new-user').value = '';
+    document.getElementById('cred-new-pass').value = '';
+    document.getElementById('cred-new-pass2').value = '';
+  } catch(e) {
+    toast('❌ ' + (e.message || 'خطا در تغییر اطلاعات'), 'err');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+  }
 }
 
 // ===== بکاپ =====
@@ -1817,8 +1919,9 @@ body{{font-family:'Vazirmatn',sans-serif;min-height:100vh;display:flex;align-ite
 
 /* نوار پیشرفت */
 .progress-section{{margin:8px 0}}
-.progress-bar{{height:4px;border-radius:4px;background:rgba(139,92,246,0.05);overflow:hidden}}
-.progress-fill{{height:100%;border-radius:4px;background:linear-gradient(90deg,#8B5CF6,#6D28D9,#22D3EE);width:0%;transition:width 1.2s ease}}
+.progress-bar{{height:7px;border-radius:5px;background:rgba(139,92,246,0.06);overflow:hidden;box-shadow:inset 0 0 5px rgba(0,0,0,0.35)}}
+.progress-fill{{height:100%;border-radius:5px;background:linear-gradient(90deg,#FF3CAC,#784BA0,#2B86C5,#22D3EE,#8B5CF6,#FF3CAC);background-size:300% 100%;animation:rgbBarFlow 5s linear infinite;box-shadow:0 0 10px rgba(139,92,246,.6);width:0%;transition:width 1.2s ease}}
+@keyframes rgbBarFlow{{0%{{background-position:0% 50%}}100%{{background-position:300% 50%}}}}
 .progress-text{{display:flex;justify-content:space-between;font-size:8px;color:var(--text3);margin-top:3px}}
 .progress-text .pct{{font-weight:700;color:var(--text2)}}
 
@@ -1836,7 +1939,9 @@ body{{font-family:'Vazirmatn',sans-serif;min-height:100vh;display:flex;align-ite
 .apps-grid{{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}}
 .app-btn{{background:rgba(139,92,246,0.02);border:1px solid var(--card-border);border-radius:8px;padding:6px 4px;text-align:center;cursor:pointer;transition:var(--transition);text-decoration:none;color:var(--text)}}
 .app-btn:hover{{background:rgba(139,92,246,0.06);transform:translateY(-2px);border-color:var(--accent)}}
-.app-btn .app-icon{{font-size:20px;display:block;margin-bottom:2px}}
+.app-btn .app-icon{{font-size:20px;display:block;margin-bottom:2px;transition:transform .3s}}
+.app-btn:hover .app-icon{{animation:emojiBounce .6s ease-in-out infinite}}
+@keyframes emojiBounce{{0%,100%{{transform:translateY(0) scale(1)}}50%{{transform:translateY(-4px) scale(1.15)}}}}
 .app-btn .app-name{{font-size:6px;color:var(--text2);font-weight:600;display:block}}
 .app-btn .app-action{{font-size:5px;color:var(--text3);display:block;margin-top:1px}}
 .app-btn .app-action.copy{{color:var(--accent2)}}
