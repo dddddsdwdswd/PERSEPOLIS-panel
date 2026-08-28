@@ -27,7 +27,7 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[logging.StreamHandler()]
 )
-logger = logging.getLogger("Persepolis-Gateway")
+logger = logging.getLogger("Batman-Gateway")
 
 IRAN_TZ = ZoneInfo("Asia/Tehran")
 
@@ -45,7 +45,7 @@ AUTH: dict = {
 AUTH_LOCK = asyncio.Lock()
 
 # ─── App ──────────────────────────────────────────────────────────────────────
-app = FastAPI(title="🏛️ Persepolis Gateway v14", docs_url=None, redoc_url=None)
+app = FastAPI(title="🦇 Batman Gateway v14", docs_url=None, redoc_url=None)
 
 app.add_middleware(
     CORSMiddleware,
@@ -57,7 +57,7 @@ app.add_middleware(
 
 # ─── State ────────────────────────────────────────────────────────────────────
 DATA_DIR = Path(os.environ.get("DATA_DIR", "/data"))
-DATA_FILE = DATA_DIR / "persepolis_state.json"
+DATA_FILE = DATA_DIR / "batman_state.json"
 SAVE_LOCK = asyncio.Lock()
 
 # ─── In-Memory State ─────────────────────────────────────────────────────────
@@ -81,7 +81,7 @@ DEVICE_CONNECTIONS_LOCK = asyncio.Lock()
 http_client: httpx.AsyncClient | None = None
 
 # ─── Auth ──────────────────────────────────────────────────────────────────────
-SESSION_COOKIE = "persepolis_session"
+SESSION_COOKIE = "batman_session"
 SESSION_TTL = 60 * 60 * 24 * 7
 SESSIONS: dict = {}
 SESSIONS_LOCK = asyncio.Lock()
@@ -395,8 +395,8 @@ async def startup():
     http_client = httpx.AsyncClient(limits=limits, timeout=timeout, follow_redirects=True)
     await load_state()
     
-    log_activity("system", "🏛️ Persepolis Gateway v14 راه‌اندازی شد", "ok")
-    logger.info(f"🏛️ Persepolis Gateway v14 started on port {CONFIG['port']}")
+    log_activity("system", "🦇 Batman Gateway v14 راه‌اندازی شد", "ok")
+    logger.info(f"🦇 Batman Gateway v14 started on port {CONFIG['port']}")
 
 @app.on_event("shutdown")
 async def shutdown():
@@ -592,7 +592,7 @@ async def create_link(request: Request, _=Depends(require_auth)):
     log_activity("link", f"کانفیگ «{label}» ساخته شد با {proto_name} + {http_name}", "ok")
     
     host = get_host()
-    remark = f"🏛️ {label}"
+    remark = f"🦇 {label}"
     main_link = generate_vless_link(uid, host, remark=remark, protocol=protocol, fingerprint=fingerprint, port=DEFAULT_PORT, http_version=http_version, fake_port=False)
     
     link_data = {
@@ -618,7 +618,7 @@ async def list_links(_=Depends(require_auth)):
         http_version = d.get("http_version", "h2")
         fp = d.get("fingerprint", "chrome")
         label = d.get("label", "کاربر")
-        remark = f"🏛️ {label}"
+        remark = f"🦇 {label}"
         
         last_connected = None
         for c in connections.values():
@@ -1206,7 +1206,7 @@ async def subscription_single(request: Request, uuid: str):
             <!DOCTYPE html>
             <html lang="fa" dir="rtl">
             <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>🏛️ کاربر یافت نشد</title>
+            <title>🦇 کاربر یافت نشد</title>
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;800&display=swap" rel="stylesheet">
             <style>
@@ -1220,7 +1220,7 @@ async def subscription_single(request: Request, uuid: str):
             </head>
             <body>
             <div class="card">
-                <div class="icon">🏛️</div>
+                <div class="icon">🦇</div>
                 <h2>کاربر یافت نشد</h2>
                 <p>لینک ساب‌لینک معتبر نیست یا کاربر حذف شده است.</p>
             </div>
@@ -1468,7 +1468,7 @@ async def info_page(uuid: str, request: Request):
         <!DOCTYPE html>
         <html lang="fa" dir="rtl">
         <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>🏛️ کاربر یافت نشد</title>
+        <title>🦇 کاربر یافت نشد</title>
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700;800&display=swap" rel="stylesheet">
         <style>
@@ -1482,7 +1482,7 @@ async def info_page(uuid: str, request: Request):
         </head>
         <body>
         <div class="card">
-            <div class="icon">🏛️</div>
+            <div class="icon">🦇</div>
             <h2>کاربر یافت نشد</h2>
             <p>لینک اطلاعات معتبر نیست یا کاربر حذف شده است.</p>
         </div>
@@ -1651,7 +1651,7 @@ async def root():
     return HTMLResponse("""
     <!DOCTYPE html>
     <html>
-    <head><meta charset="UTF-8"><title>🏛️ Persepolis Gateway v14</title>
+    <head><meta charset="UTF-8"><title>🦇 Batman Gateway v14</title>
     <style>
     body{font-family:sans-serif;background:#0a0a1a;color:#F5ECD7;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}
     .card{text-align:center;padding:40px;background:rgba(20,15,10,0.7);border-radius:20px;border:1px solid rgba(212,175,55,0.2)}
@@ -1662,8 +1662,8 @@ async def root():
     </head>
     <body>
     <div class="card">
-        <h1>🏛️</h1>
-        <h2>Persepolis Gateway v14</h2>
+        <h1>🦇</h1>
+        <h2>Batman Gateway v14</h2>
         <p class="sub">پنل مدیریت فیلترشکن</p>
         <a href="/login">ورود به پنل →</a>
     </div>
