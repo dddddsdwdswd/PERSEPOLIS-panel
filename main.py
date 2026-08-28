@@ -38,8 +38,11 @@ CONFIG = {
     "host": os.environ.get("RAILWAY_PUBLIC_DOMAIN", os.environ.get("RENDER_EXTERNAL_URL", "localhost")),
 }
 
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "PERSEPOLIS"
+AUTH: dict = {
+    "username": os.environ.get("ADMIN_USERNAME", "admin"),
+    "password": os.environ.get("ADMIN_PASSWORD", "PERSEPOLIS"),
+}
+AUTH_LOCK = asyncio.Lock()
 
 # ─── App ──────────────────────────────────────────────────────────────────────
 app = FastAPI(title="🏛️ Persepolis Gateway v14", docs_url=None, redoc_url=None)
@@ -341,6 +344,11 @@ async def load_state():
             SUBS.update(data.get("subs", {}))
             if "settings" in data:
                 SETTINGS.update(data["settings"])
+            if "auth" in data and isinstance(data["auth"], dict):
+                if data["auth"].get("username"):
+                    AUTH["username"] = data["auth"]["username"]
+                if data["auth"].get("password"):
+                    AUTH["password"] = data["auth"]["password"]
             if "hourly_traffic" in data:
                 hourly_traffic = defaultdict(int, data["hourly_traffic"])
             if "hourly_traffic_history" in data:
@@ -365,6 +373,7 @@ async def save_state():
                 "links": dict(LINKS),
                 "subs": dict(SUBS),
                 "settings": SETTINGS,
+                "auth": dict(AUTH),
                 "hourly_traffic": dict(hourly_traffic),
                 "hourly_traffic_history": hist_dict,
                 "saved_at": datetime.now().isoformat(),
@@ -431,6 +440,41 @@ async def toggle_rgb(request: Request, _=Depends(require_auth)):
     SETTINGS["rgb_mode"] = bool(body.get("enabled", False))
     await save_state()
     return {"rgb_mode": SETTINGS["rgb_mode"]}
+
+@app.post("/api/settings/credentials")
+async def change_credentials(request: Request, token: str = Depends(require_auth)):
+    body = await request.json()
+    current_password = body.get("current_password", "")
+    new_username = (body.get("new_username") or "").strip()[:60]
+    new_password = body.get("new_password") or ""
+
+    async with AUTH_LOCK:
+        if current_password != AUTH["password"]:
+            raise HTTPException(status_code=403, detail="رمز عبور فعلی اشتباه است")
+
+        if not new_username and not new_password:
+            raise HTTPException(status_code=400, detail="هیچ تغییری وارد نشده است")
+
+        if new_username:
+            if len(new_username) < 3:
+                raise HTTPException(status_code=400, detail="نام کاربری باید حداقل ۳ کاراکتر باشد")
+            AUTH["username"] = new_username
+
+        if new_password:
+            if len(new_password) < 4:
+                raise HTTPException(status_code=400, detail="رمز عبور جدید باید حداقل ۴ کاراکتر باشد")
+            AUTH["password"] = new_password
+
+    # امنیت: بقیه سشن‌ها باطل میشن، فقط همین سشن فعلی زنده می‌مونه
+    async with SESSIONS_LOCK:
+        keep_expiry = SESSIONS.get(token)
+        SESSIONS.clear()
+        if keep_expiry is not None:
+            SESSIONS[token] = keep_expiry
+
+    await save_state()
+    log_activity("auth", "🔐 اطلاعات ورود ادمین تغییر کرد", "warn")
+    return {"ok": True, "username": AUTH["username"]}
 
 # ─── API: Dashboard Stats ──────────────────────────────────────────────────
 
@@ -807,7 +851,7 @@ async def api_login(request: Request):
     password = body.get("password", "")
     remember = body.get("remember", False)
     
-    if username != ADMIN_USERNAME or password != ADMIN_PASSWORD:
+    if username != AUTH["username"] or password != AUTH["password"]:
         log_activity("auth", f"تلاش ورود ناموفق از {ip}", "err")
         raise HTTPException(status_code=401, detail="یوزرنیم یا رمز عبور اشتباه است")
     
